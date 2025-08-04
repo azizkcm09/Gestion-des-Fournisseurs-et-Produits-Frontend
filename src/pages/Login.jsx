@@ -1,27 +1,54 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { api } from "../api/axios";
+
 export default function Login() {
+  const [email, setEmail] = useState("");
+  const [mdp, setMdp] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!email || !mdp) {
+      setError("Remplissez tous les champs");
+      return;
+    }
+    try {
+      const res = await api.post("/users/login", { email, mdp });
+      localStorage.setItem("token", res.data.token);
+      navigate("/accueil");
+    } catch {
+      setError("Email ou mot de passe incorrect");
+    }
+    0;
+  };
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-sm">
-        <h2 className="text-2xl font-bold mb-4">Connexion</h2>
-        <form>
-          <input
-            type="email"
-            placeholder="Email"
-            className="w-full p-2 mb-4 border rounded"
-          />
-          <input
-            type="password"
-            placeholder="Mot de passe"
-            className="w-full p-2 mb-4 border rounded"
-          />
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
-          >
-            Se connecter
-          </button>
-        </form>
-      </div>
-    </div>
+    <form
+      onSubmit={handleSubmit}
+      className="max-w-sm mx-auto mt-10 p-6 border rounded"
+    >
+      <h2 className="text-xl mb-4">Connexion</h2>
+      {error && <p className="text-red-500">{error}</p>}
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        className="w-full mb-3 p-2 border"
+      />
+      <input
+        type="password"
+        placeholder="Mot de passe"
+        value={mdp}
+        onChange={(e) => setMdp(e.target.value)}
+        className="w-full mb-3 p-2 border"
+      />
+      <button
+        type="submit"
+        className="w-full bg-blue-600 text-white p-2 rounded"
+      >
+        Se connecter
+      </button>
+    </form>
   );
 }
