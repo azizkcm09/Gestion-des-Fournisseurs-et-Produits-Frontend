@@ -4,8 +4,8 @@ import Footer from "./components/Footer";
 import Accueil from "./pages/Acceuil";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import AdminUsersPage from "./pages/Admin";
 import Admin from "./pages/Admin";
+import FournisseurPage from "./pages/Fourinisseur";
 
 function App() {
   return (
@@ -18,6 +18,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/fournisseur" element={<FournisseurPage />} />
           </Routes>
         </main>
         <Footer />
