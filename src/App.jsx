@@ -7,6 +7,7 @@ import Register from "./pages/Register";
 import Admin from "./pages/Admin";
 import FournisseurPage from "./pages/Fourinisseur";
 import Users from "./pages/Users";
+import Categories from "./pages/Categories";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Route path="/admin" element={<Admin />} />
             <Route path="/fournisseur" element={<FournisseurPage />} />
             <Route path="/users" element={<Users />} />
+            <Route path="/categories" element={<Categories />} />
           </Routes>
         </main>
         <Footer />

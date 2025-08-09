@@ -24,7 +24,12 @@ export default function Sidebar({
       path: "/admin",
     },
     { id: "users", label: "Utilisateurs", icon: Users, path: "/users" },
-    { id: "categories", label: "Catégories", icon: FolderOpen },
+    {
+      id: "categories",
+      label: "Catégories",
+      icon: FolderOpen,
+      path: "/categories",
+    },
     { id: "orders", label: "Commandes", icon: ShoppingCart },
     { id: "deliveries", label: "Livraisons", icon: Truck },
     { id: "reports", label: "Rapports", icon: FileText },
