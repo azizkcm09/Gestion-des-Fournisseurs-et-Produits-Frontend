@@ -31,7 +31,7 @@ export default function Sidebar({
       path: "/categories",
     },
     { id: "orders", label: "Commandes", icon: ShoppingCart, path: "/orders" },
-    { id: "deliveries", label: "Livraisons", icon: Truck },
+    { id: "deliveries", label: "Livraisons", icon: Truck, path: "/deliveries" },
     { id: "reports", label: "Rapports", icon: FileText },
     { id: "alerts", label: "Alertes", icon: AlertCircle },
   ];
