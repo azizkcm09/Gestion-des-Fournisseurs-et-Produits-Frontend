@@ -8,6 +8,7 @@ import Admin from "./pages/Admin";
 import FournisseurPage from "./pages/Fourinisseur";
 import Users from "./pages/Users";
 import Categories from "./pages/Categories";
+import Orders from "./pages/Orders";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             <Route path="/fournisseur" element={<FournisseurPage />} />
             <Route path="/users" element={<Users />} />
             <Route path="/categories" element={<Categories />} />
+            <Route path="/orders" element={<Orders />} />
           </Routes>
         </main>
         <Footer />

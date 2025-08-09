@@ -30,7 +30,7 @@ export default function Sidebar({
       icon: FolderOpen,
       path: "/categories",
     },
-    { id: "orders", label: "Commandes", icon: ShoppingCart },
+    { id: "orders", label: "Commandes", icon: ShoppingCart, path: "/orders" },
     { id: "deliveries", label: "Livraisons", icon: Truck },
     { id: "reports", label: "Rapports", icon: FileText },
     { id: "alerts", label: "Alertes", icon: AlertCircle },
