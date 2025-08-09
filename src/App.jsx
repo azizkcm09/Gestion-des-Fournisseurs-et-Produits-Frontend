@@ -11,6 +11,7 @@ import Categories from "./pages/Categories";
 import Orders from "./pages/Orders";
 import Deliveries from "./pages/Deleveries";
 import Reports from "./pages/Reports";
+import Alerts from "./pages/Alertes";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             <Route path="/orders" element={<Orders />} />
             <Route path="/deliveries" element={<Deliveries />} />
             <Route path="/reports" element={<Reports />} />
+            <Route path="/alerts" element={<Alerts />} />
           </Routes>
         </main>
         <Footer />
