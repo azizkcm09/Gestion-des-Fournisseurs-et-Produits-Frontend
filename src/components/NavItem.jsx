@@ -1,10 +1,12 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function NavItem({ item, isActive, isOpen, onClick }) {
   const Icon = item.icon;
 
   return (
-    <button
+    <Link
+      to={item.path || "#"}
       onClick={onClick}
       className={`
         w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg
@@ -27,6 +29,6 @@ export default function NavItem({ item, isActive, isOpen, onClick }) {
       {isActive && (
         <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-gradient-to-b from-blue-500 to-purple-500 rounded-r-full" />
       )}
-    </button>
+    </Link>
   );
 }

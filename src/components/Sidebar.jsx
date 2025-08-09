@@ -17,8 +17,13 @@ export default function Sidebar({
   toggleSidebar,
 }) {
   const menuItems = [
-    { id: "dashboard", label: "Tableau de bord", icon: LayoutDashboard },
-    { id: "users", label: "Utilisateurs", icon: Users },
+    {
+      id: "dashboard",
+      label: "Tableau de bord",
+      icon: LayoutDashboard,
+      path: "/admin",
+    },
+    { id: "users", label: "Utilisateurs", icon: Users, path: "/users" },
     { id: "categories", label: "Catégories", icon: FolderOpen },
     { id: "orders", label: "Commandes", icon: ShoppingCart },
     { id: "deliveries", label: "Livraisons", icon: Truck },
@@ -73,6 +78,7 @@ export default function Sidebar({
             isActive={activeNav === item.id}
             isOpen={isOpen}
             onClick={() => setActiveNav(item.id)}
+            path={item.path}
           />
         ))}
       </nav>
