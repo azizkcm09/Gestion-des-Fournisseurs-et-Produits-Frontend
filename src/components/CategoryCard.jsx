@@ -1,7 +1,7 @@
 import React from "react";
 import { Edit, Trash2, Monitor, Shirt, Apple } from "lucide-react";
 
-export default function CategoryCard({ category }) {
+export default function CategoryCard({ category, onEdit, onDelete }) {
   const IconComponent = {
     Monitor: Monitor,
     Shirt: Shirt,
@@ -13,10 +13,16 @@ export default function CategoryCard({ category }) {
       <div className="flex items-center justify-between mb-4">
         {IconComponent && <IconComponent className="w-8 h-8 text-gray-600" />}
         <div className="flex space-x-2">
-          <button className="text-blue-600 hover:text-blue-900">
+          <button
+            onClick={() => onEdit(category)}
+            className="text-blue-600 hover:text-blue-900"
+          >
             <Edit className="w-5 h-5" />
           </button>
-          <button className="text-red-600 hover:text-red-900">
+          <button
+            onClick={() => onDelete(category)}
+            className="text-red-600 hover:text-red-900"
+          >
             <Trash2 className="w-5 h-5" />
           </button>
         </div>
