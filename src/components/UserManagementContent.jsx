@@ -1,9 +1,74 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import UserSearchFilter from "./UserSearchFilter";
 import UserTable from "./UserTable";
 import AddUserButton from "./AddUserButton";
+import AddUserModal from "./AddUserModal";
 
 export default function UserManagementContent() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [users, setUsers] = useState([
+    {
+      id: 1,
+      nom: "Dupont",
+      prenom: "Jean",
+      email: "jean@example.com",
+      role: "ADMIN",
+      statut: "Actif",
+    },
+    {
+      id: 2,
+      nom: "Martin",
+      prenom: "Marie",
+      email: "marie@example.com",
+      role: "CLIENT",
+      statut: "Actif",
+    },
+    {
+      id: 3,
+      nom: "Durand",
+      prenom: "Pierre",
+      email: "pierre@example.com",
+      role: "FOURNISSEUR",
+      statut: "Inactif",
+    },
+  ]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterOptions, setFilterOptions] = useState({ role: "", statut: "" });
+  const [filteredUsers, setFilteredUsers] = useState([]);
+
+  useEffect(() => {
+    const lowercasedSearchTerm = searchTerm.toLowerCase();
+    const filtered = users.filter((user) => {
+      const matchesSearch =
+        user.nom.toLowerCase().includes(lowercasedSearchTerm) ||
+        user.prenom.toLowerCase().includes(lowercasedSearchTerm) ||
+        user.email.toLowerCase().includes(lowercasedSearchTerm);
+
+      const matchesRole =
+        filterOptions.role === "" || user.role === filterOptions.role;
+      const matchesStatut =
+        filterOptions.statut === "" || user.statut === filterOptions.statut;
+
+      return matchesSearch && matchesRole && matchesStatut;
+    });
+    setFilteredUsers(filtered);
+  }, [users, searchTerm, filterOptions]);
+
+  const handleAddUser = (newUserData) => {
+    setUsers((prevUsers) => [
+      ...prevUsers,
+      { id: prevUsers.length + 1, ...newUserData },
+    ]);
+  };
+
+  const handleSearchChange = (term) => {
+    setSearchTerm(term);
+  };
+
+  const handleFilterChange = (filters) => {
+    setFilterOptions(filters);
+  };
+
   return (
     <div className="space-y-6 animate-fadeIn">
       <div className="flex items-center justify-between">
@@ -15,10 +80,18 @@ export default function UserManagementContent() {
             Gérez les utilisateurs de votre système
           </p>
         </div>
-        <AddUserButton />
+        <AddUserButton onClick={() => setIsModalOpen(true)} />
       </div>
-      <UserSearchFilter />
-      <UserTable />
+      <UserSearchFilter
+        onSearchChange={handleSearchChange}
+        onFilterChange={handleFilterChange}
+      />
+      <UserTable users={filteredUsers} />
+      <AddUserModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onAddUser={handleAddUser}
+      />
     </div>
   );
 }

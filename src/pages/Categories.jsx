@@ -14,7 +14,7 @@ export default function Categories() {
     setTimeout(() => setIsLoading(false), 1000);
 
     // Add animation styles
-    const style = document.createElement("style");
+    const style = document.createElement("style"); 
     style.textContent = `
       @keyframes fadeIn {
         from { opacity: 0; transform: translateY(10px); }

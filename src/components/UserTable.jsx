@@ -1,34 +1,7 @@
 import React from "react";
 import { Edit, Trash2 } from "lucide-react";
 
-export default function UserTable() {
-  const users = [
-    {
-      id: 1,
-      nom: "Dupont",
-      prenom: "Jean",
-      email: "jean@example.com",
-      role: "ADMIN",
-      statut: "Actif",
-    },
-    {
-      id: 2,
-      nom: "Martin",
-      prenom: "Marie",
-      email: "marie@example.com",
-      role: "CLIENT",
-      statut: "Actif",
-    },
-    {
-      id: 3,
-      nom: "Durand",
-      prenom: "Pierre",
-      email: "pierre@example.com",
-      role: "FOURNISSEUR",
-      statut: "Inactif",
-    },
-  ];
-
+export default function UserTable({ users }) {
   const getRoleColor = (role) => {
     switch (role) {
       case "ADMIN":
