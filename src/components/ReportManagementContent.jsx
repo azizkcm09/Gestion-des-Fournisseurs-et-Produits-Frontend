@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import AddReportButton from "./AddReportButton";
 import ReportCard from "./ReportCard";
+import NewReportModal from "./NewReportModal";
 
 export default function ReportManagementContent() {
+  const [isNewReportModalOpen, setIsNewReportModalOpen] = useState(false);
+
   const reports = [
     {
       id: 1,
@@ -31,6 +34,14 @@ export default function ReportManagementContent() {
     },
   ];
 
+  const handleGenerateReport = (reportData) => {
+    console.log("Générer le rapport avec les données:", reportData);
+    // Ici, vous intégreriez la logique réelle de génération de rapport (ex: appel API, création PDF)
+    alert(
+      `Rapport de type ${reportData.reportType} pour la période ${reportData.period} généré !`
+    );
+  };
+
   return (
     <div className="space-y-6 animate-fadeIn">
       <div className="flex items-center justify-between">
@@ -38,13 +49,18 @@ export default function ReportManagementContent() {
           <h1 className="text-3xl font-bold text-gray-800">Rapports</h1>
           <p className="text-gray-600">Générez et consultez vos rapports</p>
         </div>
-        <AddReportButton />
+        <AddReportButton onClick={() => setIsNewReportModalOpen(true)} />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {reports.map((report) => (
           <ReportCard key={report.id} report={report} />
         ))}
       </div>
+      <NewReportModal
+        isOpen={isNewReportModalOpen}
+        onClose={() => setIsNewReportModalOpen(false)}
+        onGenerateReport={handleGenerateReport}
+      />
     </div>
   );
 }
