@@ -2,10 +2,18 @@ import React, { useState, useEffect } from "react";
 import UserSearchFilter from "./UserSearchFilter";
 import UserTable from "./UserTable";
 import AddUserButton from "./AddUserButton";
-import AddUserModal from "./AddUserModal";
+import AddUserModal from "././AddUserModal";
+import EditUserModal from "./EditUserModal";
+import DeleteConfirmationModal from "./DeleteConfirmationModal";
 
 export default function UserManagementContent() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
+    useState(false);
+  const [userToEdit, setUserToEdit] = useState(null);
+  const [userToDelete, setUserToDelete] = useState(null);
+
   const [users, setUsers] = useState([
     {
       id: 1,
@@ -61,6 +69,28 @@ export default function UserManagementContent() {
     ]);
   };
 
+  const handleEditUser = (updatedUser) => {
+    setUsers((prevUsers) =>
+      prevUsers.map((user) => (user.id === updatedUser.id ? updatedUser : user))
+    );
+  };
+
+  const handleDeleteUser = (userId) => {
+    setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+    setIsDeleteConfirmationOpen(false);
+    setUserToDelete(null);
+  };
+
+  const openEditModal = (user) => {
+    setUserToEdit(user);
+    setIsEditModalOpen(true);
+  };
+
+  const openDeleteConfirmation = (user) => {
+    setUserToDelete(user);
+    setIsDeleteConfirmationOpen(true);
+  };
+
   const handleSearchChange = (term) => {
     setSearchTerm(term);
   };
@@ -80,17 +110,33 @@ export default function UserManagementContent() {
             Gérez les utilisateurs de votre système
           </p>
         </div>
-        <AddUserButton onClick={() => setIsModalOpen(true)} />
+        <AddUserButton onClick={() => setIsAddModalOpen(true)} />
       </div>
       <UserSearchFilter
         onSearchChange={handleSearchChange}
         onFilterChange={handleFilterChange}
       />
-      <UserTable users={filteredUsers} />
+      <UserTable
+        users={filteredUsers}
+        onEdit={openEditModal}
+        onDelete={openDeleteConfirmation}
+      />
       <AddUserModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
         onAddUser={handleAddUser}
+      />
+      <EditUserModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onSaveUser={handleEditUser}
+        user={userToEdit}
+      />
+      <DeleteConfirmationModal
+        isOpen={isDeleteConfirmationOpen}
+        onClose={() => setIsDeleteConfirmationOpen(false)}
+        onConfirm={() => handleDeleteUser(userToDelete.id)}
+        userEmail={userToDelete?.email}
       />
     </div>
   );
