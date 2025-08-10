@@ -1,31 +1,7 @@
 import React from "react";
 import { Eye } from "lucide-react";
 
-export default function DeliveryTable() {
-  const deliveries = [
-    {
-      id: "LIV001",
-      orderId: "CMD001",
-      deliveryPerson: "Paul Leblanc",
-      status: "En route",
-      eta: "14:30",
-    },
-    {
-      id: "LIV002",
-      orderId: "CMD002",
-      deliveryPerson: "Sophie Moreau",
-      status: "Livré",
-      eta: "Terminé",
-    },
-    {
-      id: "LIV003",
-      orderId: "CMD003",
-      deliveryPerson: "Marc Dubois",
-      status: "Préparation",
-      eta: "16:00",
-    },
-  ];
-
+export default function DeliveryTable({ deliveries, onViewDetails }) {
   const getStatusColor = (status) => {
     switch (status) {
       case "En route":
@@ -84,30 +60,33 @@ export default function DeliveryTable() {
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {deliveries.map((delivery) => (
-            <tr key={delivery.id}>
+            <tr key={delivery.idLivraison}>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                {delivery.id}
+                {delivery.idLivraison}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {delivery.orderId}
+                {delivery.commandeId}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {delivery.deliveryPerson}
+                {delivery.livreur}
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <span
                   className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
-                    delivery.status
+                    delivery.statut
                   )}`}
                 >
-                  {delivery.status}
+                  {delivery.statut}
                 </span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {delivery.eta}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <button className="text-indigo-600 hover:text-indigo-900">
+                <button
+                  onClick={() => onViewDetails(delivery)}
+                  className="text-indigo-600 hover:text-indigo-900"
+                >
                   <Eye className="w-5 h-5" />
                 </button>
               </td>
