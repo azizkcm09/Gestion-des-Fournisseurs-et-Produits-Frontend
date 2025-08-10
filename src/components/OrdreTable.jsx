@@ -1,31 +1,7 @@
 import React from "react";
 import { Eye } from "lucide-react";
 
-export default function OrderTable() {
-  const orders = [
-    {
-      id: "CMD001",
-      client: "Entreprise ABC",
-      date: "2024-01-15",
-      status: "En cours",
-      total: "1,250€",
-    },
-    {
-      id: "CMD002",
-      client: "Société XYZ",
-      date: "2024-01-14",
-      status: "Livré",
-      total: "890€",
-    },
-    {
-      id: "CMD003",
-      client: "SARL Martin",
-      date: "2024-01-13",
-      status: "En attente",
-      total: "2,100€",
-    },
-  ];
-
+export default function OrderTable({ orders, onViewDetails }) {
   const getStatusColor = (status) => {
     switch (status) {
       case "En cours":
@@ -84,30 +60,33 @@ export default function OrderTable() {
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {orders.map((order) => (
-            <tr key={order.id}>
+            <tr key={order.idCommande}>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                {order.id}
+                {order.idCommande}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {order.client}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {order.date}
+                {order.dateCommande}
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <span
                   className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
-                    order.status
+                    order.statut
                   )}`}
                 >
-                  {order.status}
+                  {order.statut}
                 </span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {order.total}
+                {order.totalCommande}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <button className="text-indigo-600 hover:text-indigo-900">
+                <button
+                  onClick={() => onViewDetails(order)}
+                  className="text-indigo-600 hover:text-indigo-900"
+                >
                   <Eye className="w-5 h-5" />
                 </button>
               </td>
