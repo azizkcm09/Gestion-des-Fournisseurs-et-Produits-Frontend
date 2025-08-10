@@ -1,31 +1,7 @@
 import React from "react";
-import { Eye } from "lucide-react";
+import { CheckCircle, Circle } from "lucide-react";
 
-export default function AlertTable() {
-  const alerts = [
-    {
-      id: "ALRT001",
-      type: "Stock faible",
-      message: "Le stock du produit X est inférieur à 10 unités.",
-      date: "2024-08-01",
-      priority: "Haute",
-    },
-    {
-      id: "ALRT002",
-      type: "Nouvelle commande",
-      message: "Une nouvelle commande a été passée (CMD005).",
-      date: "2024-08-02",
-      priority: "Moyenne",
-    },
-    {
-      id: "ALRT003",
-      type: "Erreur système",
-      message: "Erreur de connexion à la base de données.",
-      date: "2024-08-03",
-      priority: "Critique",
-    },
-  ];
-
+export default function AlertTable({ alerts, onToggleReadStatus }) {
   const getPriorityColor = (priority) => {
     switch (priority) {
       case "Haute":
@@ -84,7 +60,10 @@ export default function AlertTable() {
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {alerts.map((alert) => (
-            <tr key={alert.id}>
+            <tr
+              key={alert.id}
+              className={alert.read ? "bg-gray-100 opacity-70" : ""}
+            >
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                 {alert.id}
               </td>
@@ -107,8 +86,16 @@ export default function AlertTable() {
                 </span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <button className="text-indigo-600 hover:text-indigo-900">
-                  <Eye className="w-5 h-5" />
+                <button
+                  onClick={() => onToggleReadStatus(alert.id)}
+                  className="text-indigo-600 hover:text-indigo-900 flex items-center"
+                >
+                  {alert.read ? (
+                    <CheckCircle className="w-5 h-5 mr-1 text-green-500" />
+                  ) : (
+                    <Circle className="w-5 h-5 mr-1 text-gray-500" />
+                  )}
+                  {alert.read ? "Lu" : "Non lu"}
                 </button>
               </td>
             </tr>
