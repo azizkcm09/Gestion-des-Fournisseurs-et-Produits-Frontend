@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import UserSearchFilter from "./UserSearchFilter";
 import UserTable from "./UserTable";
 import AddUserButton from "./AddUserButton";
-import AddUserModal from "././AddUserModal";
+import AddUserModal from "./AddUserModal";
 import EditUserModal from "./EditUserModal";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import { api } from "../api/axios";
 
 export default function UserManagementContent() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -14,35 +15,29 @@ export default function UserManagementContent() {
   const [userToEdit, setUserToEdit] = useState(null);
   const [userToDelete, setUserToDelete] = useState(null);
 
-  const [users, setUsers] = useState([
-    {
-      id: 1,
-      nom: "Dupont",
-      prenom: "Jean",
-      email: "jean@example.com",
-      role: "ADMIN",
-      statut: "Actif",
-    },
-    {
-      id: 2,
-      nom: "Martin",
-      prenom: "Marie",
-      email: "marie@example.com",
-      role: "CLIENT",
-      statut: "Actif",
-    },
-    {
-      id: 3,
-      nom: "Durand",
-      prenom: "Pierre",
-      email: "pierre@example.com",
-      role: "FOURNISSEUR",
-      statut: "Inactif",
-    },
-  ]);
+  const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterOptions, setFilterOptions] = useState({ role: "", statut: "" });
   const [filteredUsers, setFilteredUsers] = useState([]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return console.error("No token found");
+
+        const res = await api.get("/users", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        setUsers(res.data);
+      } catch (error) {
+        console.error("Fetch users error:", error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   useEffect(() => {
     const lowercasedSearchTerm = searchTerm.toLowerCase();
@@ -59,26 +54,60 @@ export default function UserManagementContent() {
 
       return matchesSearch && matchesRole && matchesStatut;
     });
+
     setFilteredUsers(filtered);
   }, [users, searchTerm, filterOptions]);
 
-  const handleAddUser = (newUserData) => {
-    setUsers((prevUsers) => [
-      ...prevUsers,
-      { id: prevUsers.length + 1, ...newUserData },
-    ]);
+  const handleAddUser = async (newUserData) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return console.error("No token found");
+
+      const res = await api.post("/users/create", newUserData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setUsers((prev) => [...prev, res.data]);
+      setIsAddModalOpen(false);
+    } catch (error) {
+      console.error("Add user error:", error);
+    }
   };
 
-  const handleEditUser = (updatedUser) => {
-    setUsers((prevUsers) =>
-      prevUsers.map((user) => (user.id === updatedUser.id ? updatedUser : user))
-    );
+  const handleEditUser = async (updatedUser) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return console.error("No token found");
+
+      await api.put(`/users/${updatedUser.id}`, updatedUser, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setUsers((prev) =>
+        prev.map((user) => (user.id === updatedUser.id ? updatedUser : user))
+      );
+      setIsEditModalOpen(false);
+      setUserToEdit(null);
+    } catch (error) {
+      console.error("Edit user error:", error);
+    }
   };
 
-  const handleDeleteUser = (userId) => {
-    setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
-    setIsDeleteConfirmationOpen(false);
-    setUserToDelete(null);
+  const handleDeleteUser = async (userId) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return console.error("No token found");
+
+      await api.delete(`/users/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setUsers((prev) => prev.filter((user) => user.id !== userId));
+      setIsDeleteConfirmationOpen(false);
+      setUserToDelete(null);
+    } catch (error) {
+      console.error("Delete user error:", error);
+    }
   };
 
   const openEditModal = (user) => {
@@ -91,13 +120,8 @@ export default function UserManagementContent() {
     setIsDeleteConfirmationOpen(true);
   };
 
-  const handleSearchChange = (term) => {
-    setSearchTerm(term);
-  };
-
-  const handleFilterChange = (filters) => {
-    setFilterOptions(filters);
-  };
+  const handleSearchChange = (term) => setSearchTerm(term);
+  const handleFilterChange = (filters) => setFilterOptions(filters);
 
   return (
     <div className="space-y-6 animate-fadeIn">
@@ -112,26 +136,31 @@ export default function UserManagementContent() {
         </div>
         <AddUserButton onClick={() => setIsAddModalOpen(true)} />
       </div>
+
       <UserSearchFilter
         onSearchChange={handleSearchChange}
         onFilterChange={handleFilterChange}
       />
+
       <UserTable
         users={filteredUsers}
         onEdit={openEditModal}
         onDelete={openDeleteConfirmation}
       />
+
       <AddUserModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         onAddUser={handleAddUser}
       />
+
       <EditUserModal
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         onSaveUser={handleEditUser}
         user={userToEdit}
       />
+
       <DeleteConfirmationModal
         isOpen={isDeleteConfirmationOpen}
         onClose={() => setIsDeleteConfirmationOpen(false)}
