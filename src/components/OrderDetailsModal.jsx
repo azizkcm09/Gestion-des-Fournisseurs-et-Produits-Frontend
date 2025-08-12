@@ -4,8 +4,8 @@ import { X, ShoppingCart } from "lucide-react";
 export default function OrderDetailsModal({ isOpen, onClose, order }) {
   if (!isOpen || !order) return null;
 
-  const getStatusColor = (status) => {
-    switch (status) {
+  const getStatusColor = (statut) => {
+    switch (statut) {
       case "En cours":
         return "bg-purple-100 text-purple-700";
       case "Livré":
@@ -55,7 +55,7 @@ export default function OrderDetailsModal({ isOpen, onClose, order }) {
                 order.statut
               )}`}
             >
-              {order.statut}
+              {order.statutCommande}
             </span>
           </div>
           <div className="p-3 bg-green-50 rounded-md">

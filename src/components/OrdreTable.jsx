@@ -65,7 +65,7 @@ export default function OrderTable({ orders, onViewDetails }) {
                 {order.idCommande}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {order.client}
+                {order.client ? order.client.nomClient : "Inconnu"}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {order.dateCommande}
@@ -73,10 +73,10 @@ export default function OrderTable({ orders, onViewDetails }) {
               <td className="px-6 py-4 whitespace-nowrap">
                 <span
                   className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
-                    order.statut
+                    order.statutCommande
                   )}`}
                 >
-                  {order.statut}
+                  {order.statutCommande}
                 </span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
