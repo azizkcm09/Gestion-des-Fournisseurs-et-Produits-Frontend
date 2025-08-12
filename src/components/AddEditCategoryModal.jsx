@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { X, Box, Upload, CheckCircle, ChevronDown } from "lucide-react";
+import { X, Box, CheckCircle, ChevronDown } from "lucide-react";
 
 export default function AddEditCategoryModal({
   isOpen,
@@ -9,22 +9,28 @@ export default function AddEditCategoryModal({
 }) {
   const [formData, setFormData] = useState(
     category || {
-      nom: "",
-      description: "",
-      type: "",
-      imageFond: null,
+      nomCategorie: "",
+      descriptionCategorie: "",
+      typeCategorie: "",
+      imageCategorie: "Box",
     }
   );
 
   useEffect(() => {
     if (category) {
-      setFormData(category);
+      setFormData({
+        idCategorie: category.idCategorie,
+        nomCategorie: category.nomCategorie || "",
+        descriptionCategorie: category.descriptionCategorie || "",
+        typeCategorie: category.typeCategorie || "",
+        imageCategorie: category.imageCategorie || "Box",
+      });
     } else {
       setFormData({
-        nom: "",
-        description: "",
-        type: "",
-        imageFond: null,
+        nomCategorie: "",
+        descriptionCategorie: "",
+        typeCategorie: "",
+        imageCategorie: "Box",
       });
     }
   }, [category]);
@@ -34,14 +40,9 @@ export default function AddEditCategoryModal({
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleFileChange = (e) => {
-    setFormData((prevData) => ({ ...prevData, imageFond: e.target.files[0] }));
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     onSaveCategory(formData);
-    onClose();
   };
 
   if (!isOpen) return null;
@@ -71,16 +72,16 @@ export default function AddEditCategoryModal({
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label
-              htmlFor="nom"
+              htmlFor="nomCategorie"
               className="block text-sm font-medium text-gray-700"
             >
               Nom
             </label>
             <input
               type="text"
-              id="nom"
-              name="nom"
-              value={formData.nom}
+              id="nomCategorie"
+              name="nomCategorie"
+              value={formData.nomCategorie}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
               required
@@ -89,15 +90,15 @@ export default function AddEditCategoryModal({
 
           <div>
             <label
-              htmlFor="description"
+              htmlFor="descriptionCategorie"
               className="block text-sm font-medium text-gray-700"
             >
               Description
             </label>
             <textarea
-              id="description"
-              name="description"
-              value={formData.description}
+              id="descriptionCategorie"
+              name="descriptionCategorie"
+              value={formData.descriptionCategorie}
               onChange={handleChange}
               rows="3"
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
@@ -106,16 +107,16 @@ export default function AddEditCategoryModal({
 
           <div>
             <label
-              htmlFor="type"
+              htmlFor="typeCategorie"
               className="block text-sm font-medium text-gray-700"
             >
               Type de catégorie
             </label>
             <div className="relative mt-1">
               <select
-                id="type"
-                name="type"
-                value={formData.type}
+                id="typeCategorie"
+                name="typeCategorie"
+                value={formData.typeCategorie}
                 onChange={handleChange}
                 className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-3 pr-8 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
                 required
@@ -126,6 +127,8 @@ export default function AddEditCategoryModal({
                 <option value="Nourriture">Nourriture</option>
                 <option value="Maison">Maison</option>
                 <option value="Sport">Sport</option>
+                <option value="Santé">Santé</option>
+                <option value="Éducation">Éducation</option>
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                 <ChevronDown className="h-4 w-4" />
@@ -135,31 +138,31 @@ export default function AddEditCategoryModal({
 
           <div>
             <label
-              htmlFor="imageFond"
+              htmlFor="icon"
               className="block text-sm font-medium text-gray-700"
             >
-              Image de fond
+              Icône
             </label>
-            <div className="mt-1 flex items-center">
-              <input
-                type="file"
-                id="imageFond"
-                name="imageFond"
-                onChange={handleFileChange}
-                className="hidden"
-              />
-              <label
-                htmlFor="imageFond"
-                className="cursor-pointer bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+            <div className="relative mt-1">
+              <select
+                id="imageCategorie"
+                name="imageCategorie"
+                value={formData.imageCategorie}
+                onChange={handleChange}
+                className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-3 pr-8 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
               >
-                Choisir un fichier
-              </label>
-              <span className="ml-2 text-sm text-gray-500">
-                {formData.imageFond
-                  ? formData.imageFond.name
-                  : "Aucun fichier choisi"}
-              </span>
-              <Upload className="w-5 h-5 ml-auto text-gray-400" />
+                <option value="Box">Box (Défaut)</option>
+                <option value="Monitor">Monitor (Électronique)</option>
+                <option value="Shirt">Shirt (Vêtements)</option>
+                <option value="Apple">Apple (Alimentation)</option>
+                <option value="Home">Home (Maison)</option>
+                <option value="Dumbbell">Dumbbell (Sport)</option>
+                <option value="Heart">Heart (Santé)</option>
+                <option value="BookOpen">BookOpen (Éducation)</option>
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                <ChevronDown className="h-4 w-4" />
+              </div>
             </div>
           </div>
 
