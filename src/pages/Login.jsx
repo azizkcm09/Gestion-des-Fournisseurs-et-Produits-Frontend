@@ -38,6 +38,10 @@ export default function Login() {
 
       // Sauvegarde
       localStorage.setItem("token", token);
+      localStorage.setItem(
+        "adminId",
+        res.data.adminId || res.data.user?.id || ""
+      );
 
       // Décodage pour extraire le rôle
       const payload = parseJwt(token);

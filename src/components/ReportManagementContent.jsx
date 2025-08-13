@@ -1,64 +1,86 @@
-import React, { useState } from "react";
-import AddReportButton from "./AddReportButton";
+import React, { useState, useEffect } from "react";
+import { api } from "../api/axios";
 import ReportCard from "./ReportCard";
 import NewReportModal from "./NewReportModal";
 
 export default function ReportManagementContent() {
-  const [isNewReportModalOpen, setIsNewReportModalOpen] = useState(false);
+  const [reports, setReports] = useState([]);
+  const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const reports = [
-    {
-      id: 1,
-      title: "Rapport des ventes",
-      description: "Analyse des performances de vente",
-      color: "blue",
-      bgGradient: "from-blue-100 to-blue-200",
-      buttonColor: "bg-blue-500 hover:bg-blue-600",
-    },
-    {
-      id: 2,
-      title: "Rapport d'inventaire",
-      description: "État des stocks et produits",
-      color: "green",
-      bgGradient: "from-green-100 to-green-200",
-      buttonColor: "bg-green-500 hover:bg-green-600",
-    },
-    {
-      id: 3,
-      title: "Rapport de livraisons",
-      description: "Performance des livraisons",
-      color: "orange",
-      bgGradient: "from-orange-100 to-red-200",
-      buttonColor:
-        "bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600",
-    },
-  ];
+  // Fetch reports
+  useEffect(() => {
+    const fetchReports = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
 
-  const handleGenerateReport = (reportData) => {
-    console.log("Générer le rapport avec les données:", reportData);
-    // Ici, vous intégreriez la logique réelle de génération de rapport (ex: appel API, création PDF)
-    alert(
-      `Rapport de type ${reportData.reportType} pour la période ${reportData.period} généré !`
-    );
+        const res = await api.get("/rapports", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setReports(res.data);
+      } catch (err) {
+        console.error("Error fetching reports:", err);
+        setError("Erreur lors du chargement des rapports");
+      }
+    };
+    fetchReports();
+  }, []);
+
+  // Create new report
+  const handleGenerateReport = async (reportData) => {
+    try {
+      const token = localStorage.getItem("token");
+      const adminId = localStorage.getItem("adminId");
+
+      if (!token || !adminId) {
+        setError("Authentification requise. Veuillez vous connecter.");
+        setIsModalOpen(false);
+        return;
+      }
+
+      // Add adminId
+      const finalPayload = { ...reportData, adminId };
+
+      const res = await api.post("/rapports", finalPayload, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // Add the new report with color back for display
+      setReports((prev) => [{ ...res.data, color: reportData.color }, ...prev]);
+      setIsModalOpen(false);
+      setError(null);
+    } catch (err) {
+      console.error("Error creating report:", err);
+      setError("Erreur lors de la création du rapport");
+    }
   };
 
   return (
-    <div className="space-y-6 animate-fadeIn">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-800">Rapports</h1>
-          <p className="text-gray-600">Générez et consultez vos rapports</p>
-        </div>
-        <AddReportButton onClick={() => setIsNewReportModalOpen(true)} />
+    <div className="p-6">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Gestion des rapports</h1>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700"
+        >
+          Nouveau rapport
+        </button>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      {error && (
+        <div className="bg-red-100 text-red-700 p-3 rounded mb-4">{error}</div>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {reports.map((report) => (
-          <ReportCard key={report.id} report={report} />
+          <ReportCard key={report.idRapport} report={report} />
         ))}
       </div>
+
       <NewReportModal
-        isOpen={isNewReportModalOpen}
-        onClose={() => setIsNewReportModalOpen(false)}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
         onGenerateReport={handleGenerateReport}
       />
     </div>
