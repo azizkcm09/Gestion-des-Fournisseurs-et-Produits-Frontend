@@ -2,14 +2,13 @@ import React from "react";
 import { CheckCircle, Circle } from "lucide-react";
 
 export default function AlertTable({ alerts, onToggleReadStatus }) {
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case "Haute":
+  const getStatusColor = (status) => {
+    const s = status.trim();
+    switch (s) {
+      case "ACTIVE":
         return "bg-red-500 text-white";
-      case "Moyenne":
-        return "bg-yellow-500 text-white";
-      case "Critique":
-        return "bg-purple-500 text-white";
+      case "RESOLUE":
+        return "bg-green-500 text-white";
       default:
         return "bg-gray-500 text-white";
     }
@@ -30,13 +29,13 @@ export default function AlertTable({ alerts, onToggleReadStatus }) {
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
-              Type
+              Seuil-Min
             </th>
             <th
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
-              Message
+              Produit
             </th>
             <th
               scope="col"
@@ -48,7 +47,7 @@ export default function AlertTable({ alerts, onToggleReadStatus }) {
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
-              Priorité
+              Statut
             </th>
             <th
               scope="col"
@@ -61,28 +60,30 @@ export default function AlertTable({ alerts, onToggleReadStatus }) {
         <tbody className="bg-white divide-y divide-gray-200">
           {alerts.map((alert) => (
             <tr
-              key={alert.id}
+              key={alert.idAlerte}
               className={alert.read ? "bg-gray-100 opacity-70" : ""}
             >
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                {alert.id}
+                {alert.idAlerte}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {alert.type}
+                {alert.seuilMinimum}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {alert.message}
+                {alert.produit.nom}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {alert.date}
+                {alert.dateAlerte
+                  ? new Date(alert.dateAlerte).toISOString().slice(0, 16)
+                  : "—"}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap">
+              <td className="px-6 py-4 whitespace-nowrap ">
                 <span
-                  className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getPriorityColor(
-                    alert.priority
+                  className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
+                    alert.statutAlerte
                   )}`}
                 >
-                  {alert.priority}
+                  {alert.statutAlerte}
                 </span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">

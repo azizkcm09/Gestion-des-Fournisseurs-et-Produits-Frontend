@@ -88,11 +88,6 @@ export default function DeliveryManagementContent() {
     setSelectedDelivery(delivery);
     setIsModalOpen(true);
   };
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedDelivery(null);
-    setError(null);
-  };
   if (isLoading) {
     return <div className="text-center text-gray-600">Chargement...</div>;
   }
