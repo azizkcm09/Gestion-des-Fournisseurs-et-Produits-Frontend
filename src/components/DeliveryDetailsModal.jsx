@@ -5,15 +5,16 @@ export default function DeliveryDetailsModal({ isOpen, onClose, delivery }) {
   if (!isOpen || !delivery) return null;
 
   const getStatusColor = (status) => {
-    switch (status) {
-      case "En route":
-        return "bg-orange-100 text-orange-700";
-      case "Livré":
-        return "bg-green-100 text-green-700";
-      case "Préparation":
-        return "bg-blue-100 text-blue-700";
+    const s = status.trim();
+    switch (s) {
+      case "EN_TRANSIT":
+        return "bg-blue-500 text-white";
+      case "LIVREE":
+        return "bg-green-500 text-white";
+      case "EN_ATTENTE":
+        return "bg-orange-500 text-white";
       default:
-        return "bg-gray-100 text-gray-700";
+        return "bg-gray-500 text-white";
     }
   };
 
@@ -41,25 +42,38 @@ export default function DeliveryDetailsModal({ isOpen, onClose, delivery }) {
             </p>
           </div>
           <div className="p-3 bg-gray-50 rounded-md">
-            <p className="text-sm font-medium text-gray-500">Commande ID</p>
-            <p className="text-gray-900 font-semibold">{delivery.commandeId}</p>
+            <p className="text-sm font-medium text-gray-500">
+              {" "}
+              numero-Commande
+            </p>
+            <p className="text-gray-900 font-semibold">
+              {delivery.commande.numeroCommande}
+            </p>
           </div>
           <div className="p-3 bg-blue-50 rounded-md">
             <p className="text-sm font-medium text-gray-500">Date Expédition</p>
             <p className="text-blue-700 font-semibold">
-              {delivery.dateExpedition}
+              {delivery.dateExpedition
+                ? new Date(delivery.dateExpedition).toISOString().slice(0, 16)
+                : "—"}
             </p>
           </div>
           <div className="p-3 bg-gray-50 rounded-md">
-            <p className="text-sm font-medium text-gray-500">Livreur ID</p>
-            <p className="text-gray-900 font-semibold">{delivery.livreurId}</p>
+            <p className="text-sm font-medium text-gray-500">Livreur Nom</p>
+            <p className="text-gray-900 font-semibold">
+              {delivery.livreur.nom}
+            </p>
           </div>
           <div className="p-3 bg-yellow-50 rounded-md">
             <p className="text-sm font-medium text-gray-500">
               Date Livraison Prévue
             </p>
             <p className="text-yellow-700 font-semibold">
-              {delivery.dateLivraisonPrevue}
+              {delivery.dateLivraisonPrevue
+                ? new Date(delivery.dateLivraisonPrevue)
+                    .toISOString()
+                    .slice(0, 16)
+                : "—"}
             </p>
           </div>
           <div className="p-3 bg-green-50 rounded-md">
@@ -67,7 +81,11 @@ export default function DeliveryDetailsModal({ isOpen, onClose, delivery }) {
               Date Livraison Effective
             </p>
             <p className="text-green-700 font-semibold">
-              {delivery.dateLivraisonEffective}
+              {delivery.dateLivraisonEffective
+                ? new Date(delivery.dateLivraisonEffective)
+                    .toISOString()
+                    .slice(0, 16)
+                : "—"}
             </p>
           </div>
         </div>

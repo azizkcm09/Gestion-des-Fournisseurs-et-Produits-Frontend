@@ -3,13 +3,20 @@ import { Eye } from "lucide-react";
 
 export default function OrderTable({ orders, onViewDetails }) {
   const getStatusColor = (status) => {
-    switch (status) {
-      case "En cours":
+    const s = status.trim();
+    switch (s) {
+      case "CONFIRMEE":
         return "bg-blue-500 text-white";
-      case "Livré":
+      case "LIVREE":
         return "bg-green-500 text-white";
-      case "En attente":
+      case "EN_ATTENTE":
+        return "bg-orange-500 text-white";
+      case "ANNULÉE":
+        return "bg-red-500 text-white";
+      case "EN_PREPARATION":
         return "bg-yellow-500 text-white";
+      case "EXPEDIE":
+        return "bg-purple-500 text-white";
       default:
         return "bg-gray-500 text-white";
     }
@@ -30,7 +37,7 @@ export default function OrderTable({ orders, onViewDetails }) {
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
-              Client
+              numeroCommande
             </th>
             <th
               scope="col"
@@ -65,10 +72,12 @@ export default function OrderTable({ orders, onViewDetails }) {
                 {order.idCommande}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {order.client ? order.client.nomClient : "Inconnu"}
+                {order.numeroCommande}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {order.dateCommande}
+                {order.dateCommande
+                  ? new Date(order.dateCommande).toISOString().slice(0, 16)
+                  : "—"}
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <span

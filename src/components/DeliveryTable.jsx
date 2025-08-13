@@ -3,12 +3,13 @@ import { Eye } from "lucide-react";
 
 export default function DeliveryTable({ deliveries, onViewDetails }) {
   const getStatusColor = (status) => {
-    switch (status) {
-      case "En route":
+    const s = status.trim();
+    switch (s) {
+      case "EN_TRANSIT":
         return "bg-blue-500 text-white";
-      case "Livré":
+      case "LIVREE":
         return "bg-green-500 text-white";
-      case "Préparation":
+      case "EN_ATTENTE":
         return "bg-orange-500 text-white";
       default:
         return "bg-gray-500 text-white";
@@ -65,22 +66,26 @@ export default function DeliveryTable({ deliveries, onViewDetails }) {
                 {delivery.idLivraison}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {delivery.commandeId}
+                {delivery.commande.numeroCommande}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {delivery.livreur}
+                {delivery.livreur.nom}
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <span
                   className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
-                    delivery.statut
+                    delivery.statutLivraison
                   )}`}
                 >
-                  {delivery.statut}
+                  {delivery.statutLivraison}
                 </span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {delivery.eta}
+                {delivery.dateLivraisonPrevue
+                  ? new Date(delivery.dateLivraisonPrevue)
+                      .toISOString()
+                      .slice(0, 16)
+                  : "—"}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 <button

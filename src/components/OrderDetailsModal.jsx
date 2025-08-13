@@ -4,16 +4,23 @@ import { X, ShoppingCart } from "lucide-react";
 export default function OrderDetailsModal({ isOpen, onClose, order }) {
   if (!isOpen || !order) return null;
 
-  const getStatusColor = (statut) => {
-    switch (statut) {
-      case "En cours":
-        return "bg-purple-100 text-purple-700";
-      case "Livré":
-        return "bg-green-100 text-green-700";
-      case "En attente":
-        return "bg-yellow-100 text-yellow-700";
+  const getStatusColor = (status) => {
+    const s = status.trim();
+    switch (s) {
+      case "CONFIRMEE":
+        return "bg-blue-500 text-white";
+      case "LIVREE":
+        return "bg-green-500 text-white";
+      case "EN_ATTENTE":
+        return "bg-orange-500 text-white";
+      case "ANNULÉE":
+        return "bg-red-500 text-white";
+      case "EN_PREPARATION":
+        return "bg-yellow-500 text-white";
+      case "EXPEDIE":
+        return "bg-purple-500 text-white";
       default:
-        return "bg-gray-100 text-gray-700";
+        return "bg-gray-500 text-white";
     }
   };
 
@@ -46,13 +53,17 @@ export default function OrderDetailsModal({ isOpen, onClose, order }) {
           </div>
           <div className="p-3 bg-gray-50 rounded-md">
             <p className="text-sm font-medium text-gray-500">Date Commande</p>
-            <p className="text-gray-900 font-semibold">{order.dateCommande}</p>
+            <p className="text-gray-900 font-semibold">
+              {order.dateCommande
+                ? new Date(order.dateCommande).toISOString().slice(0, 16)
+                : "—"}
+            </p>
           </div>
           <div className="p-3 bg-gray-50 rounded-md">
             <p className="text-sm font-medium text-gray-500">Statut</p>
             <span
               className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
-                order.statut
+                order.statutCommande
               )}`}
             >
               {order.statutCommande}
@@ -94,7 +105,11 @@ export default function OrderDetailsModal({ isOpen, onClose, order }) {
             <p className="text-sm font-medium text-gray-500">
               Date de Paiement
             </p>
-            <p className="text-gray-900 font-semibold">{order.datePaiement}</p>
+            <p className="text-gray-900 font-semibold">
+              {order.datePaiement
+                ? new Date(order.datePaiement).toISOString().slice(0, 16)
+                : "—"}
+            </p>
           </div>
         </div>
       </div>
