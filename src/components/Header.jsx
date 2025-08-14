@@ -7,6 +7,7 @@ export default function Header({ toggleSidebar }) {
 
   const handleLogout = () => {
     localStorage.removeItem("token"); // Supprime le token d'authentification
+    localStorage.removeItem("adminId"); // Supprime l'ID de l'administrateur
     navigate("/login"); // Redirige vers la page de connexion
   };
 
