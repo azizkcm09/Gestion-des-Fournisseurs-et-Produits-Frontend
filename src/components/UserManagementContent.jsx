@@ -5,6 +5,7 @@ import AddUserButton from "./AddUserButton";
 import AddUserModal from "./AddUserModal";
 import EditUserModal from "./EditUserModal";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import Pagination from "./Pagination";
 import { api } from "../api/axios";
 
 export default function UserManagementContent() {
@@ -15,31 +16,67 @@ export default function UserManagementContent() {
   const [userToEdit, setUserToEdit] = useState(null);
   const [userToDelete, setUserToDelete] = useState(null);
 
+  // États pour les données et la pagination
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterOptions, setFilterOptions] = useState({ role: "", statut: "" });
   const [filteredUsers, setFilteredUsers] = useState([]);
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) return console.error("No token found");
+  // États pour la pagination (maintenant gérée côté serveur)
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5); // Nombre d'utilisateurs par page
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-        const res = await api.get("/users", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        setUsers(res.data);
-      } catch (error) {
-        console.error("Fetch users error:", error);
+  // Fonction pour récupérer les utilisateurs avec pagination côté serveur
+  const fetchUsers = async (page = 1, limit = itemsPerPage) => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found");
+        return;
       }
-    };
 
-    fetchUsers();
-  }, []);
+      const res = await api.get(`/users?page=${page}&limit=${limit}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
+      console.log("API response:", res.data);
+
+      // Extraire les données de la réponse paginée
+      const {
+        users: usersData,
+        totalUsers: total,
+        totalPages: pages,
+      } = res.data;
+
+      setUsers(usersData || []);
+      setTotalUsers(total || 0);
+      setTotalPages(pages || 0);
+    } catch (error) {
+      console.error("Fetch users error:", error);
+      setUsers([]);
+      setTotalUsers(0);
+      setTotalPages(0);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Charger les utilisateurs au montage du composant
   useEffect(() => {
+    fetchUsers(currentPage, itemsPerPage);
+  }, [currentPage, itemsPerPage]);
+
+  // Effet pour filtrer les utilisateurs côté client (sur les données de la page actuelle)
+  useEffect(() => {
+    if (!Array.isArray(users)) {
+      setFilteredUsers([]);
+      return;
+    }
+
     const lowercasedSearchTerm = searchTerm.toLowerCase();
     const filtered = users.filter((user) => {
       const matchesSearch =
@@ -67,7 +104,8 @@ export default function UserManagementContent() {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      setUsers((prev) => [...prev, res.data]);
+      // Recharger les données après ajout
+      await fetchUsers(currentPage, itemsPerPage);
       setIsAddModalOpen(false);
     } catch (error) {
       console.error("Add user error:", error);
@@ -83,9 +121,8 @@ export default function UserManagementContent() {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      setUsers((prev) =>
-        prev.map((user) => (user.id === updatedUser.id ? updatedUser : user))
-      );
+      // Recharger les données après modification
+      await fetchUsers(currentPage, itemsPerPage);
       setIsEditModalOpen(false);
       setUserToEdit(null);
     } catch (error) {
@@ -102,7 +139,8 @@ export default function UserManagementContent() {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      setUsers((prev) => prev.filter((user) => user.id !== userId));
+      // Recharger les données après suppression
+      await fetchUsers(currentPage, itemsPerPage);
       setIsDeleteConfirmationOpen(false);
       setUserToDelete(null);
     } catch (error) {
@@ -120,8 +158,22 @@ export default function UserManagementContent() {
     setIsDeleteConfirmationOpen(true);
   };
 
-  const handleSearchChange = (term) => setSearchTerm(term);
-  const handleFilterChange = (filters) => setFilterOptions(filters);
+  const handleSearchChange = (term) => {
+    setSearchTerm(term);
+    // Note: Pour une recherche optimale, vous pourriez vouloir implémenter
+    // la recherche côté serveur en ajoutant des paramètres de requête
+  };
+
+  const handleFilterChange = (filters) => {
+    setFilterOptions(filters);
+    // Note: Pour un filtrage optimal, vous pourriez vouloir implémenter
+    // le filtrage côté serveur en ajoutant des paramètres de requête
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    // fetchUsers sera appelé automatiquement via useEffect
+  };
 
   return (
     <div className="space-y-6 animate-fadeIn">
@@ -142,11 +194,26 @@ export default function UserManagementContent() {
         onFilterChange={handleFilterChange}
       />
 
-      <UserTable
-        users={filteredUsers}
-        onEdit={openEditModal}
-        onDelete={openDeleteConfirmation}
-      />
+      {loading ? (
+        <div className="flex justify-center items-center py-8">
+          <div className="text-gray-500">Chargement...</div>
+        </div>
+      ) : (
+        <>
+          <UserTable
+            users={filteredUsers}
+            onEdit={openEditModal}
+            onDelete={openDeleteConfirmation}
+          />
+
+          <Pagination
+            currentPage={currentPage}
+            totalItems={totalUsers}
+            itemsPerPage={itemsPerPage}
+            onPageChange={handlePageChange}
+          />
+        </>
+      )}
 
       <AddUserModal
         isOpen={isAddModalOpen}
