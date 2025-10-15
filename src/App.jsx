@@ -4,7 +4,7 @@ import {
   Route,
   useLocation,
 } from "react-router-dom";
-import Navbar from "./components/navbar";
+import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Accueil from "./pages/Acceuil";
 import Login from "./pages/Login";
@@ -17,6 +17,8 @@ import Orders from "./pages/Orders";
 import Deliveries from "./pages/Deleveries";
 import Reports from "./pages/Reports";
 import Alerts from "./pages/Alertes";
+import ClientDashboard from "./pages/ClientDashboard";
+import { CartProvider } from "./contexts/CartContext";
 
 function App() {
   const location = useLocation();
@@ -28,6 +30,7 @@ function App() {
     "/deliveries",
     "/reports",
     "/alerts",
+    "/client",
   ].includes(location.pathname);
 
   return (
@@ -40,6 +43,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/fournisseur" element={<FournisseurPage />} />
+          <Route path="/client" element={<ClientDashboard />} />
           <Route path="/users" element={<Users />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/orders" element={<Orders />} />
@@ -55,8 +59,10 @@ function App() {
 
 export default function AppWrapper() {
   return (
-    <Router>
-      <App />
-    </Router>
+    <CartProvider>
+      <Router>
+        <App />
+      </Router>
+    </CartProvider>
   );
 }

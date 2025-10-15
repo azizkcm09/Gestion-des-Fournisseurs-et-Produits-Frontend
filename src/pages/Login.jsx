@@ -37,6 +37,12 @@ export default function Login() {
       if (!token) throw new Error("Pas de token retourné");
 
       localStorage.setItem("token", token);
+
+      // Store user data
+      if (res.data.user) {
+        localStorage.setItem("user", JSON.stringify(res.data.user));
+      }
+
       localStorage.setItem(
         "adminId",
         res.data.adminId || res.data.user?.id || ""
@@ -51,12 +57,15 @@ export default function Login() {
         "";
       const role = String(roleRaw).toUpperCase();
 
+      // Redirect based on role
       if (role === "ADMIN") {
         navigate("/admin");
       } else if (role === "FOURNISSEUR" || role === "PROVIDER") {
         navigate("/fournisseur");
+      } else if (role === "CLIENT") {
+        navigate("/client");
       } else {
-        navigate("/");
+        navigate("/client"); // Default to client dashboard for logged-in users
       }
     } catch (err) {
       console.error(err);

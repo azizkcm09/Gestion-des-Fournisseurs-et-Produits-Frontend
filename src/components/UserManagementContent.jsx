@@ -160,14 +160,12 @@ export default function UserManagementContent() {
 
   const handleSearchChange = (term) => {
     setSearchTerm(term);
-    // Note: Pour une recherche optimale, vous pourriez vouloir implémenter
-    // la recherche côté serveur en ajoutant des paramètres de requête
+ 
   };
 
   const handleFilterChange = (filters) => {
     setFilterOptions(filters);
-    // Note: Pour un filtrage optimal, vous pourriez vouloir implémenter
-    // le filtrage côté serveur en ajoutant des paramètres de requête
+
   };
 
   const handlePageChange = (page) => {
