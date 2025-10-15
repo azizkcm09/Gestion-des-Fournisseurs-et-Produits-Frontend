@@ -79,6 +79,10 @@ export default function OrderManagementContent() {
     };
 
     fetchOrders();
+
+    // Refresh orders every 30 seconds for real-time updates
+    const interval = setInterval(fetchOrders, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   const openOrderDetailsModal = (order) => {
@@ -90,6 +94,16 @@ export default function OrderManagementContent() {
     setIsModalOpen(false);
     setSelectedOrder(null);
     setError(null);
+  };
+
+  const handleOrderUpdate = (orderId, newStatus) => {
+    setOrders((prevOrders) =>
+      prevOrders.map((order) =>
+        order.idCommande === orderId
+          ? { ...order, statutCommande: newStatus }
+          : order
+      )
+    );
   };
 
   if (isLoading) {
@@ -144,7 +158,11 @@ export default function OrderManagementContent() {
         </div>
       )}
 
-      <OrderTable orders={orders} onViewDetails={openOrderDetailsModal} />
+      <OrderTable
+        orders={orders}
+        onViewDetails={openOrderDetailsModal}
+        onUpdateOrder={handleOrderUpdate}
+      />
 
       <OrderDetailsModal
         isOpen={isModalOpen}

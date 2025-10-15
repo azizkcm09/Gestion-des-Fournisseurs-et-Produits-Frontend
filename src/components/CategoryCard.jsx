@@ -63,10 +63,10 @@ export default function CategoryCard({ category, onEdit, onDelete }) {
 
       <div className="mt-auto pt-4 border-t border-gray-100">
         <p className="text-2xl font-bold text-gray-800">
-          {category.produits?.length || 0}
+          {category._count?.produits || 0}
         </p>
         <p className="text-sm text-gray-500">
-          {(category.produits?.length || 0) <= 1 ? "produit" : "produits"}
+          {(category._count?.produits || 0) <= 1 ? "produit" : "produits"}
         </p>
       </div>
     </div>
